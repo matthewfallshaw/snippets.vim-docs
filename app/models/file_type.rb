@@ -26,12 +26,12 @@ class FileType
   def snippets
     snippets = []
     File.open(file) do |f|
+      subs = {}.with_indifferent_access
       f.each do |line|
-        subs = {}
         case line
         when /let (..) = g:(\w+)/
           subs[$1] = $2
-        when /exec ([^ ]*)/
+        when /exec ("Snippet .*)/
           snippets << Snippet.new($1, subs)
         else
           # not interesting

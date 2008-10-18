@@ -11,7 +11,7 @@ describe FileType do
   describe "class methods" do
     it "should discover contents of after/ftplugin directory" do
       %w[html rails ruby xhtml].each do |ft|
-        create_snippets_fixture(ft)
+        create_filetype_fixture(ft)
       end
       FileType.all.collect(&:name).should == %w[html rails ruby xhtml]
     end
@@ -26,8 +26,8 @@ describe FileType do
     end
   end
   describe "#snippets" do
-    it "should be a collection of snippets" do
-      file = create_snippets_fixture("ruby") do |f|
+    before do
+      @file = create_filetype_fixture("ruby") do |f|
         f.puts <<-TEXT
 if !exists('loaded_snippet') || &cp
     finish
@@ -41,8 +41,17 @@ exec "Snippet mrnt rename_table \"".st."oldTableName".et."\", \"".st."newTableNa
 exec "Snippet rfu render :file => \"".st."filepath".et."\", :use_full_path => ".st."false".et.st.et
         TEXT
       end
+    end
+    it "should be a collection of snippets" do
+      FileType.new(@file).snippets.size.should == 2
       Snippet.stub!(:new).and_return(mock("snippet"))
-      FileType.new(file).snippets.size.should == 2
+    end
+    it "should extract subs" do
+      subs = { "st" => "snip_start_tag",
+               "et" => "snip_end_tag",
+               "cd" => "snip_elem_delim" }
+      Snippet.should_receive(:new).exactly(2).times.with(an_instance_of(String), subs)
+      FileType.new(@file).snippets
     end
   end
 
@@ -52,7 +61,7 @@ exec "Snippet rfu render :file => \"".st."filepath".et."\", :use_full_path => ".
     File.expand_path(File.join(File.dirname(__FILE__), "../fixtures/vimdir"))
   end
 
-  def create_snippets_fixture(file_type)
+  def create_filetype_fixture(file_type)
     file = File.join(fixtures_dir, "after/ftplugin", "#{file_type}_snippets.vim")
     FileUtils.mkdir_p(File.dirname(file))
     FileUtils.touch(file)
