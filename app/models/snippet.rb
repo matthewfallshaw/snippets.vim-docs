@@ -9,7 +9,7 @@ class Snippet
   end
 
   def name
-    @snippet[/"Snippet (\w+)/,1]
+    @snippet[/"Snippet (\S+)/,1]
   end
   def content
     content = @snippet
@@ -22,6 +22,6 @@ class Snippet
       end
       "#{content_match}#{sub_match}"
     end
-    content[/Snippet \w+ (.*?)"?$/,1]
+    content[/Snippet \S+ (.*?)"?$/,1]
   end
 end

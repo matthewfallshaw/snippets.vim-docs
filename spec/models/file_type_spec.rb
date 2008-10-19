@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FileType do
-  before do
+  before(:each) do
     FileType.send(:class_variable_set, :@@vimdir, fixtures_dir)
   end
   after do
@@ -55,7 +55,7 @@ exec "Snippet rfu render :file => \"".st."filepath".et."\", :use_full_path => ".
     end
   end
 
-  private
+   private
 
   def fixtures_dir
     File.expand_path(File.join(File.dirname(__FILE__), "../fixtures/vimdir"))

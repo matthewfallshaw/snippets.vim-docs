@@ -1,0 +1,22 @@
+<h1>VIM Snippets</h1>
+<h2>Table of Contents</h2>
+<ul id="table_of_contents">
+<% for file_type in FileType.all.sort {|a,b| a.name <=> b.name } -%>
+  <li><a href="#<%= h file_type.name %>"><%= h file_type.name %></a></li>
+<% end -%>
+</ul>
+
+<h2>FileTypes</h2>
+<% for file_type in FileType.all.sort {|a,b| a.name <=> b.name } -%>
+<table id="<%= file_type.name %>">
+  <thead>
+    <tr><th colspan="2"><%= h file_type.name %></th></tr>
+    <tr><th>Snippet</th><th>Content</th></tr>
+  </thead>
+  <tbody>
+<% for snippet in file_type.snippets.sort {|a,b| a.name <=> b.name } -%>
+    <tr><td><code><%= h snippet.name %></code></td><td><code><%= h snippet.content %></code></td></tr>
+<% end -%>
+  </tbody>
+</table>
+<% end -%>
